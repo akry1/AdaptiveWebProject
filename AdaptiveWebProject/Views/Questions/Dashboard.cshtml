@@ -1,0 +1,83 @@
+﻿@model IEnumerable<SelectListItem>
+
+@using Microsoft.AspNet.Identity
+
+@{
+    ViewBag.Title = "Dashboard";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+
+    <br />
+    <h4> Welcome @User.Identity.GetUserId() </h4>
+    <hr />
+
+    <table class="dl-horizontal">
+        @*<dt>
+            @Html.DisplayNameFor(model => model.AspNetUser.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => row.AspNetUser.Email)
+        </dd>*@
+
+        <tr class="row">
+            <td class="col-lg-8">
+                @Html.Label("Question")
+            </td>
+            <td class="col-lg-4">
+                @Html.Label("Is Relevant?")
+            </td>
+        </tr>
+    @foreach (var row in Model)
+    {
+        <tr class="row">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @*@Html.HiddenFor("3")
+        @Html.HiddenFor(@User.Identity.GetUserId())*@
+
+            <td class="col-lg-8 form-group">
+                @Html.DisplayFor(model => row.Text)
+            </td>       
+
+            <td class="col-lg-2 form-group">
+                @*@Html.DisplayFor(model => row.Value)*@
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => row.Value)
+                        @Html.ValidationMessageFor(model => row.Value, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </td>
+            <td class="col-lg-2 form-group">
+                <div>
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Save" class="btn btn-default" />
+                    </div>
+                </div>
+            </td>
+        }
+        </tr>
+    }
+    </table>
+
+    <div id="userId"></div>
+</div>
+<br />
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+@section scripts{
+    <script>
+        var model = '@Html.Raw(Json.Encode(Model))';
+        $('#userId').text(model);
+    </script>
+
+}
