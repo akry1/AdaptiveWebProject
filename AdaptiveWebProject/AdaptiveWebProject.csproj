@@ -172,7 +172,6 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\QuestionsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -240,6 +239,10 @@
     <Compile Include="Migrations\201604270613563_PostsTableChange.Designer.cs">
       <DependentUpon>201604270613563_PostsTableChange.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201604281114373_UpdatePostsTable.cs" />
+    <Compile Include="Migrations\201604281114373_UpdatePostsTable.Designer.cs">
+      <DependentUpon>201604281114373_UpdatePostsTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -247,6 +250,8 @@
     <Compile Include="Models\PostDetails.cs" />
     <Compile Include="Models\PostTags.cs" />
     <Compile Include="Models\Posts.cs" />
+    <Compile Include="Models\PostWithDifficulty.cs" />
+    <Compile Include="Models\QuestionParts.cs" />
     <Compile Include="Models\UserSatisfaction.cs" />
     <Compile Include="Models\UsersData.cs" />
     <Compile Include="Models\UserTags.cs" />
@@ -275,11 +280,6 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Views\Questions\Create.cshtml" />
-    <Content Include="Views\Questions\Dashboard.cshtml" />
-    <Content Include="Views\Questions\Delete.cshtml" />
-    <Content Include="Views\Questions\Edit.cshtml" />
-    <Content Include="Views\Questions\Index.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -380,6 +380,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201604270613563_PostsTableChange.resx">
       <DependentUpon>201604270613563_PostsTableChange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201604281114373_UpdatePostsTable.resx">
+      <DependentUpon>201604281114373_UpdatePostsTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

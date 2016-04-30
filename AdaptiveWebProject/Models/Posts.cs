@@ -12,7 +12,9 @@ namespace AdaptiveWebProject.Models
         [Key]
         public int PostId { get; set; }
 
-        public string Data{ get; set; }
+        public string Tags { get; set; }
+
+        public string Question{ get; set; }
 
         [ForeignKey("PostId")]
         public virtual IList<PostTags> PostTags { get; set; }
