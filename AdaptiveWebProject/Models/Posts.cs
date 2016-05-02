@@ -22,5 +22,8 @@ namespace AdaptiveWebProject.Models
         [ForeignKey("PostId")]
         public virtual IList<PostDetails> PostDetails { get; set; }
 
+        [ForeignKey("PostId")]
+        public virtual IList<PostTagsImp> PostTagsImp { get; set; }
+
     }
 }

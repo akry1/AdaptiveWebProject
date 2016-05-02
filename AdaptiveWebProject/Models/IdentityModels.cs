@@ -44,6 +44,15 @@ namespace AdaptiveWebProject.Models
         public virtual DbSet<UserTags> UserTags { get; set; }
 
         public virtual DbSet<UserSatisfaction> UserSatisfaction { get; set; }
+
+        public virtual DbSet<UserName> UserName { get; set; }
+
+        public virtual DbSet<PostTagsImp> PostTagsImp { get; set; }
+
+        public virtual DbSet<UserAcceptedAnswers> UserAcceptedAnswers { get; set; }
+
+        public virtual DbSet<UserUpvotes> UserUpvotes { get; set; }
+
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)
         //{
         //    modelBuilder.Entity<Questions>()

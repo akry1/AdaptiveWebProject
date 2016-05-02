@@ -3,16 +3,197 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>Adaptive Navigation Support</title>
     <link href="../Scripts/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="../Scripts/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
     <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
+    <style media="screen">
+              @@media only screen and (max-width: 500px) {
+    .container {
+    max-width: 1500px;
+}
+}  
+                #vin_container .panel-heading {
+                    background-color: #E5F3FF;
+                    cursor: pointer;
+                }
+
+                .questionImage {
+                    background-image: url(data:image/png;base64,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);
+                }
+
+                #page-wrapper {
+                    margin: 0 !important;
+                }
+
+                #styleData .row {
+                    margin: 0;
+                }
+
+                .flip-container {
+                    -webkit-perspective: 1000;
+                    -moz-perspective: 1000;
+                    -o-perspective: 1000;
+                    perspective: 1000;
+                    border: 1px solid #ccc;
+                }
+
+                #styleData .fa {
+                    margin-left: 65px;
+                    line-height:107px;
+                }
+
+                .flip-container:hover .flipper,
+                .flip-container.hover .flipper {
+                    -webkit-transform: rotateY(180deg);
+                    -moz-transform: rotateY(180deg);
+                    -o-transform: rotateY(180deg);
+                    transform: rotateY(180deg);
+                }
+
+                .flip-container, .front, .back {
+                    /*width: 320px;
+        height: 427px;*/
+                }
+
+                .flipper {
+                    -webkit-transition: 0.6s;
+                    -webkit-transform-style: preserve-3d;
+                    -moz-transition: 0.6s;
+                    -moz-transform-style: preserve-3d;
+                    -o-transition: 0.6s;
+                    -o-transform-style: preserve-3d;
+                    transition: 0.6s;
+                    transform-style: preserve-3d;
+                    position: relative;
+                }
+
+                .front, .back {
+                    -webkit-backface-visibility: hidden;
+                    -moz-backface-visibility: hidden;
+                    -o-backface-visibility: hidden;
+                    backface-visibility: hidden;
+                    text-align: center !important;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                }
+
+                .front {
+                    /*	background: url(http://davidwalsh.name/demo/dwflip.jpg) 0 0 no-repeat;*/
+                    z-index: 2;
+                }
+
+                .back {
+                    -webkit-transform: rotateY(180deg);
+                    -moz-transform: rotateY(180deg);
+                    -o-transform: rotateY(180deg);
+                    transform: rotateY(180deg);
+                    /*background: #f8f8f8;*/
+                }
+
+                .tag{                    
+                    color: #39739d;
+                    background-color: #E1ECF4;
+                    border-color: transparent;
+                    font-size: 12px;
+                    margin: 0 2px;
+                    padding: 2px;
+                    border-radius: 5px;
+                }
+                .navbar-inverse .navbar-brand {color:#fff !important}
+                ul.nav.navbar-nav.in *, nav navbar-nav navbar-right {
+                    color: #fff;
+                }
+
+        #styleData {
+            height: 136px;
+        }
+        #styleData .panel-heading{
+            height:107px;
+            /*line-height: 107px;*/
+        }
+
+                .front .name {
+                    font-size: 2em;
+                    display: inline-block;
+                    background: rgba(33, 33, 33, 0.9);
+                    color: #f8f8f8;
+                    font-family: Courier;
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                    bottom: 60px;
+                    left: 25%;
+                    position: absolute;
+                    text-shadow: 0.1em 0.1em 0.05em #333;
+                    -webkit-transform: rotate(-20deg);
+                    -moz-transform: rotate(-20deg);
+                    -o-transform: rotate(-20deg);
+                    transform: rotate(-20deg);
+                }
+                .list-group-item{
+                    border:none;
+                }
+                .progress{
+                    margin-bottom:0px;
+                }
+                .back-logo {
+                    position: absolute;
+                    top: 40px;
+                    left: 90px;
+                    width: 160px;
+                    height: 117px;
+                    /*background: url(http://davidwalsh.name/demo/logo.png) 0 0 no-repeat;*/
+                }
+                #hhh{
+                    position:relative
+                }
+                #hhh span:first-child{
+                    position:absolute;
+                    left:-10px;
+                }
+                 #hhh span:last-child{
+                    position:absolute;
+                    right:-10px;
+                }
+                .back-title {
+                    font-weight: bold;
+                    color: #00304a;
+                    position: absolute;
+                    top: 180px;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+                    text-shadow: 0.1em 0.1em 0.05em #acd7e5;
+                    font-family: Courier;
+                    font-size: 2em;
+                }
+                .navbar-inverse .navbar-nav > li > a {
+                    color:#fff !important;
+                }
+                .navbar-inverse .navbar-nav > li > a:hover{ -webkit-transform: scale(1.2); /* Safari */
+    transform: scale(1.2); /* Standard syntax */}
+
+                .back p {
+                    position: absolute;
+                    bottom: 40px;
+                    left: 0;
+                    right: 0;
+                    text-align: center;
+                    padding: 0 20px;
+                    font-family: arial;
+                    line-height: 2em;
+                }
+
+                }
+    </style>
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:darkred">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:#428bca">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -44,6 +225,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script src="../dist/js/sb-admin-2.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

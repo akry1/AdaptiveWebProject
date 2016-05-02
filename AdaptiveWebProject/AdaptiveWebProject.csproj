@@ -243,6 +243,26 @@
     <Compile Include="Migrations\201604281114373_UpdatePostsTable.Designer.cs">
       <DependentUpon>201604281114373_UpdatePostsTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201605010223289_AddUserNameTable.cs" />
+    <Compile Include="Migrations\201605010223289_AddUserNameTable.Designer.cs">
+      <DependentUpon>201605010223289_AddUserNameTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605010452419_OneMorePostsTable.cs" />
+    <Compile Include="Migrations\201605010452419_OneMorePostsTable.Designer.cs">
+      <DependentUpon>201605010452419_OneMorePostsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605010457067_AddFKTOIMP.cs" />
+    <Compile Include="Migrations\201605010457067_AddFKTOIMP.Designer.cs">
+      <DependentUpon>201605010457067_AddFKTOIMP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605012015023_AddNewUserTables.cs" />
+    <Compile Include="Migrations\201605012015023_AddNewUserTables.Designer.cs">
+      <DependentUpon>201605012015023_AddNewUserTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201605012019438_UpdateToStrings.cs" />
+    <Compile Include="Migrations\201605012019438_UpdateToStrings.Designer.cs">
+      <DependentUpon>201605012019438_UpdateToStrings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -250,11 +270,15 @@
     <Compile Include="Models\PostDetails.cs" />
     <Compile Include="Models\PostTags.cs" />
     <Compile Include="Models\Posts.cs" />
+    <Compile Include="Models\PostTagsImp.cs" />
     <Compile Include="Models\PostWithDifficulty.cs" />
     <Compile Include="Models\QuestionParts.cs" />
+    <Compile Include="Models\UserAcceptedAnswers.cs" />
+    <Compile Include="Models\UserName.cs" />
     <Compile Include="Models\UserSatisfaction.cs" />
     <Compile Include="Models\UsersData.cs" />
     <Compile Include="Models\UserTags.cs" />
+    <Compile Include="Models\UserUpvotes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -273,8 +297,47 @@
     <Content Include="less\mixins.less" />
     <Content Include="less\sb-admin-2.less" />
     <Content Include="less\variables.less" />
-    <None Include="Properties\PublishProfiles\AdaptiveNavigationSupport.pubxml" />
+    <Content Include="Scripts\font-awesome\.bower.json" />
+    <Content Include="Scripts\font-awesome\.npmignore" />
+    <Content Include="Scripts\font-awesome\bower.json" />
+    <Content Include="Scripts\font-awesome\fonts\fontawesome-webfont.eot" />
+    <Content Include="Scripts\font-awesome\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Scripts\font-awesome\fonts\fontawesome-webfont.woff" />
+    <Content Include="Scripts\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="Scripts\font-awesome\less\bordered-pulled.less" />
+    <Content Include="Scripts\font-awesome\less\core.less" />
+    <Content Include="Scripts\font-awesome\less\extras.less" />
+    <Content Include="Scripts\font-awesome\less\fixed-width.less" />
+    <Content Include="Scripts\font-awesome\less\font-awesome.less" />
+    <Content Include="Scripts\font-awesome\less\icons.less" />
+    <Content Include="Scripts\font-awesome\less\larger.less" />
+    <Content Include="Scripts\font-awesome\less\list.less" />
+    <Content Include="Scripts\font-awesome\less\mixins.less" />
+    <Content Include="Scripts\font-awesome\less\path.less" />
+    <Content Include="Scripts\font-awesome\less\rotated-flipped.less" />
+    <Content Include="Scripts\font-awesome\less\spinning.less" />
+    <Content Include="Scripts\font-awesome\less\stacked.less" />
+    <Content Include="Scripts\font-awesome\less\variables.less" />
+    <Content Include="Scripts\font-awesome\scss\font-awesome.scss" />
+    <Content Include="Scripts\font-awesome\scss\_bordered-pulled.scss" />
+    <Content Include="Scripts\font-awesome\scss\_core.scss" />
+    <Content Include="Scripts\font-awesome\scss\_extras.scss" />
+    <Content Include="Scripts\font-awesome\scss\_fixed-width.scss" />
+    <Content Include="Scripts\font-awesome\scss\_icons.scss" />
+    <Content Include="Scripts\font-awesome\scss\_larger.scss" />
+    <Content Include="Scripts\font-awesome\scss\_list.scss" />
+    <Content Include="Scripts\font-awesome\scss\_mixins.scss" />
+    <Content Include="Scripts\font-awesome\scss\_path.scss" />
+    <Content Include="Scripts\font-awesome\scss\_rotated-flipped.scss" />
+    <Content Include="Scripts\font-awesome\scss\_spinning.scss" />
+    <Content Include="Scripts\font-awesome\scss\_stacked.scss" />
+    <Content Include="Scripts\font-awesome\scss\_variables.scss" />
+    <None Include="Properties\PublishProfiles\AdaptiveWeb.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\font-awesome\.gitignore" />
+    <Content Include="Scripts\font-awesome\css\font-awesome.css" />
+    <Content Include="Scripts\font-awesome\css\font-awesome.min.css" />
+    <Content Include="Scripts\font-awesome\fonts\fontawesome-webfont.svg" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -282,6 +345,13 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\metisMenu\dist\metisMenu.css" />
+    <Content Include="Scripts\metisMenu\dist\metisMenu.js" />
+    <Content Include="Scripts\metisMenu\dist\metisMenu.min.css" />
+    <Content Include="Scripts\metisMenu\dist\metisMenu.min.js" />
+    <Content Include="Scripts\metisMenu\Gruntfile.js" />
+    <Content Include="Scripts\metisMenu\src\metisMenu.css" />
+    <Content Include="Scripts\metisMenu\src\metisMenu.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -323,6 +393,11 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Scripts\metisMenu\.bower.json" />
+    <Content Include="Scripts\metisMenu\bower.json" />
+    <Content Include="Scripts\metisMenu\LICENSE" />
+    <Content Include="Scripts\metisMenu\package.json" />
+    <Content Include="Scripts\metisMenu\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -390,6 +465,24 @@
     <EmbeddedResource Include="Migrations\201604281114373_UpdatePostsTable.resx">
       <DependentUpon>201604281114373_UpdatePostsTable.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605010223289_AddUserNameTable.resx">
+      <DependentUpon>201605010223289_AddUserNameTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605010452419_OneMorePostsTable.resx">
+      <DependentUpon>201605010452419_OneMorePostsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605010457067_AddFKTOIMP.resx">
+      <DependentUpon>201605010457067_AddFKTOIMP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605012015023_AddNewUserTables.resx">
+      <DependentUpon>201605012015023_AddNewUserTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201605012019438_UpdateToStrings.resx">
+      <DependentUpon>201605012019438_UpdateToStrings.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
