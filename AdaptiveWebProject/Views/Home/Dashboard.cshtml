@@ -205,12 +205,14 @@
                                
                                 <div class="progress">
                                     
-                                    <div id="bar" class="progress-bar progress-bar-success active progress-bar-striped" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"> </div>
+                                    <div id="bar" class="progress-bar progress-bar-success active progress-bar-striped" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"> </div>
                                 </div>
                                 <div id="hhh">  <span> naive </span> <span> mediocore</span> </div>
                                 </a>
                              
                         </div>
+
+                        <div class="list-group well" id="Pie"> <i class="fa fa-pie-chart"> </i>  <span>    Pie chart  </span></div>
                         <!-- /.list-group -->
                         @*<a href="#" class="btn btn-default btn-block">View All Alerts</a>*@
                     </div>
@@ -226,14 +228,17 @@
 </div>
 <br />
 <p>
-    @Html.ActionLink("Back to List", "Index")
+    @*@Html.ActionLink("Back to List", "Index")*@
 </p>
 
+<div id="chart" style="">
+    
+</div>
+
 @section scripts{
+<script type="text/javascript" src="~/Scripts/d3.js"></script>
+<script type="text/javascript" src="~/Scripts/bpopup.js"></script>
     <script>
-        $(window).load(function(){
-            alert("data loaded")
-        })
         var model = @Html.Raw(Json.Encode(Model));
         var i =0;
         model.forEach(function (question) {
@@ -244,6 +249,56 @@
             i++;
         });
 
+        
+
+        $("#Pie").on("click",function(){
+            $("#chart svg").remove()
+            $('#chart').bPopup({
+                speed: 650,
+                transition:"slideIn",
+                transitionClose:"slideBack"
+            });
+
+
+            var w = 300;
+            var h = 300;
+            var r = h/2;
+            var color = d3.scale.category20c();
+
+            var data = [{"label":"Eclipse", "value":2}, 
+                              {"label":"Java-Ee", "value":5}, 
+                              {"label":"Jpa", "value":10}];
+
+
+            var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+            var pie = d3.layout.pie().value(function(d){return d.value;});
+
+            // declare an arc generator function
+            var arc = d3.svg.arc().outerRadius(r);
+
+            // select paths, use arc generator to draw
+            var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+            arcs.append("svg:path")
+                .attr("fill", function(d, i){
+                    return color(i);
+                })
+                .attr("d", function (d) {
+                    // log the result of the arc generator to show how cool it is :)
+                    console.log(arc(d));
+                    return arc(d);
+                });
+
+            // add the text
+            arcs.append("svg:text").attr("transform", function(d){
+                d.innerRadius = 0;
+                d.outerRadius = r;
+                return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
+                    return data[i].label;}
+                    );
+
+        
+        })
+
         $('#vin_container .panel-body').hide();
 
         $('#vin_container .panel-heading').on("click",function(){
@@ -251,7 +306,26 @@
             $(this).next().toggle('slow');
         });
 
-        $("#bar").css("width","40%")
+        
+        var points = @Html.Raw(ViewBag.PointsMod);
+        var tot =@Html.Raw(ViewBag.MaxPoints);
+        var per = (points/tot )*100
+        console.log(per) 
+        $("#bar").width(per + '%').text(points);
+
+        if(points<=100){
+            $('#hhh span:first-child').text('Naive - 0')
+            $('#hhh span:last-child').text('Mediocre - 100')   
+        }
+        else if(points>100 && points<=500 ){
+            $('#hhh span:first-child').text('Mediocre - 0')
+            $('#hhh span:last-child').text('Expert - 400')
+        }
+        else{
+            $('#hhh span:last-child').text('Expert')
+            $('#hhh span:first-child').text('Expert')
+        }
+
 
         var tags = @Html.Raw(Json.Encode(ViewBag.Tags));
         console.log("printing length" +tags.length)
@@ -273,6 +347,11 @@
         function onSuccess(data) {
             $('#userId').text(data);
         }
+
+
+
+
+
     </script>
 
 }

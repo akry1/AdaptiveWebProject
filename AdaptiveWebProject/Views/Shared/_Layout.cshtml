@@ -92,6 +92,7 @@
                     -moz-transform: rotateY(180deg);
                     -o-transform: rotateY(180deg);
                     transform: rotateY(180deg);
+                    text-transform: capitalize;
                     /*background: #f8f8f8;*/
                 }
 
@@ -111,6 +112,13 @@
 
         #styleData {
             height: 136px;
+        }
+        #chart{
+            width:600px;
+            height:400px;
+            background:#fff;
+            text-align:center;
+            padding-top:50px
         }
         #styleData .panel-heading{
             height:107px;
@@ -136,7 +144,9 @@
                 }
                 .list-group-item{
                     border:none;
+                    cursor:default;
                 }
+
                 .progress{
                     margin-bottom:0px;
                 }
@@ -225,7 +235,7 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script src="../dist/js/sb-admin-2.js"></script>
-    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+   
     @RenderSection("scripts", required: false)
 </body>
 </html>
