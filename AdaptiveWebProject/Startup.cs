@@ -10,5 +10,8 @@ namespace AdaptiveWebProject
         {
             ConfigureAuth(app);
         }
+
+         
+
     }
 }

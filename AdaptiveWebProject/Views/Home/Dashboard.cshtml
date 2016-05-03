@@ -243,7 +243,6 @@
         var i =0;
         model.forEach(function (question) {
             //console.log(question);
-
             $('#container_questions').html(question);
             $('#vin_container .panel-body:eq('+i+')').html(question);
             i++;
@@ -355,7 +354,6 @@
             $('#insertTags').append('<span class="tag">'+tags[i]+' </span>')
         }
 
-        $('#userId').text(model);
 
         $('#sample').click(function () {
             $.ajax({

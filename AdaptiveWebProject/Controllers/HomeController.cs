@@ -13,13 +13,14 @@ using System.Data.Entity;
 
 namespace AdaptiveWebProject.Controllers
 {
+    
     public class HomeController : Controller
     {
 
         ApplicationDbContext db = new ApplicationDbContext();
 
         AppDBEntities dbView = new AppDBEntities();
-        
+
         public ActionResult Index()
         {
             return View();
@@ -40,7 +41,8 @@ namespace AdaptiveWebProject.Controllers
         }
 
         [Authorize]
-        //[OutputCache(Duration = 600, SqlDependency = "db:PostDetails")]
+        [OutputCache(Duration = 100, VaryByParam = "none")]
+
         public ActionResult Dashboard()
         {
             List<String> questions = new List<String>();
@@ -105,8 +107,8 @@ namespace AdaptiveWebProject.Controllers
                         {
                             var q = Regex.Match(i.Question.Trim(), "[^ ]*'Body':(.*), 'Title'").Groups[1].Value;
                             q = Regex.Replace(q, "['\"]", "");
-                            q = Regex.Replace(q, "(\\\\n)+", "<br />");
-                            q = Regex.Replace(q, "(\\\\r)+", "<br />");
+                            q = Regex.Replace(q, "((\\\\r)+\\\\n)+", "<br />");
+                            //q = Regex.Replace(q, "(\\\\r)+", "");
                             questions.Add(q);
                         }
 
@@ -136,11 +138,7 @@ namespace AdaptiveWebProject.Controllers
             }
             return View(questions);
         }
-
-        public void getQuestions(String[] splitTags, List<EasyPost> postdetails )
-        {
-
-        }
+        
 
     }
 }
