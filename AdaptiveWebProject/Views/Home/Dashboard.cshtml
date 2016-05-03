@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<String>
-
+@using Microsoft.AspNet.Identity
 <div id="wrapper">
     <!-- Navigation -->
     <div id="page-wrapper">
@@ -202,14 +202,14 @@
                     <div class="panel-body">
                         <div class="list-group">
                             <a href="#" class="list-group-item">
-                               
+
                                 <div class="progress">
-                                    
+
                                     <div id="bar" class="progress-bar progress-bar-success active progress-bar-striped" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"> </div>
                                 </div>
                                 <div id="hhh">  <span> naive </span> <span> mediocore</span> </div>
-                                </a>
-                             
+                            </a>
+
                         </div>
 
                         <div class="list-group well" id="Pie"> <i class="fa fa-pie-chart"> </i>  <span>    Pie chart  </span></div>
@@ -232,42 +232,54 @@
 </p>
 
 <div id="chart" style="">
-    
+
 </div>
 
 @section scripts{
-<script type="text/javascript" src="~/Scripts/d3.js"></script>
-<script type="text/javascript" src="~/Scripts/bpopup.js"></script>
+    <script type="text/javascript" src="~/Scripts/d3.js"></script>
+    <script type="text/javascript" src="~/Scripts/bpopup.js"></script>
     <script>
         var model = @Html.Raw(Json.Encode(Model));
         var i =0;
         model.forEach(function (question) {
-            console.log(question);
+            //console.log(question);
 
             $('#container_questions').html(question);
             $('#vin_container .panel-body:eq('+i+')').html(question);
             i++;
         });
 
-        
+        var jqxhr = $.getJSON('../Scripts/jsonda_string.json', function(d) {
+            //console.log( "success" );
+            var p = JSON.parse(d);
+            var t = p[@User.Identity.GetUserName()];
+            var data=[];
+            for(var i=0; i<t.length;i++){
+                var obj={};
+                obj['label'] = t[i][0]
+                obj['value'] = t[i][1]
+                data.push(obj)
+                console.log(data)
+            }
+            $("#Pie").on("click",function(){
+                $("#chart svg").remove()
+                var w = 300;
+                var h = 300;
+                var r = h/2;
+                var color = d3.scale.category20c();
+                $('#chart').bPopup({
+                    speed: 650,
+                    transition:"slideIn",
+                    transitionClose:"slideBack"
+                });
 
-        $("#Pie").on("click",function(){
-            $("#chart svg").remove()
-            $('#chart').bPopup({
-                speed: 650,
-                transition:"slideIn",
-                transitionClose:"slideBack"
-            });
+            @*if(@User.Identity.GetUserName() == "3090225"){
+            var data =[{"label":"pojo", "value":1},{"label":"spring","value":2}];
+            }
+            else{
+                var data =[{"label":"collections", "value":5},{"label":"generics","value":7},{"label":"subtyping","value":4}];
+            }*@
 
-
-            var w = 300;
-            var h = 300;
-            var r = h/2;
-            var color = d3.scale.category20c();
-
-            var data = [{"label":"Eclipse", "value":2}, 
-                              {"label":"Java-Ee", "value":5}, 
-                              {"label":"Jpa", "value":10}];
 
 
             var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
@@ -295,9 +307,19 @@
                 return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
                     return data[i].label;}
                     );
+            })
+            })
+            .done(function() {
+                //console.log( "second success" );
+            })
+            .fail(function() {
+                console.log( "error" );
+            })
+            .always(function() {
+                console.log( "complete" );
+            });
 
-        
-        })
+
 
         $('#vin_container .panel-body').hide();
 
@@ -306,16 +328,16 @@
             $(this).next().toggle('slow');
         });
 
-        
+
         var points = @Html.Raw(ViewBag.PointsMod);
         var tot =@Html.Raw(ViewBag.MaxPoints);
         var per = (points/tot )*100
-        console.log(per) 
+        console.log(per)
         $("#bar").width(per + '%').text(points);
 
         if(points<=100){
             $('#hhh span:first-child').text('Naive - 0')
-            $('#hhh span:last-child').text('Mediocre - 100')   
+            $('#hhh span:last-child').text('Mediocre - 100')
         }
         else if(points>100 && points<=500 ){
             $('#hhh span:first-child').text('Mediocre - 0')

@@ -184,7 +184,7 @@
                 .navbar-inverse .navbar-nav > li > a {
                     color:#fff !important;
                 }
-                .navbar-inverse .navbar-nav > li > a:hover{ -webkit-transform: scale(1.2); /* Safari */
+                .navbar-inverse .navbar-nav > li > a:hover{ -webkit-transform: scale(1.2);  -moz-transform:scale(1.2)/* Safari */
     transform: scale(1.2); /* Standard syntax */}
 
                 .back p {
@@ -211,11 +211,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Stack Overflow Navigation Support", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Stack Overflow Navigation Support", "Dashboard", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    @*<li>@Html.ActionLink("Home", "Index", "Home")</li>*@
                     <li>@Html.ActionLink("Dashboard", "Dashboard", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     @*<li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@

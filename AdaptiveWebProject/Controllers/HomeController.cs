@@ -9,6 +9,7 @@ using AdaptiveWebProject.Models;
 using Newtonsoft.Json.Linq;
 using System.Web.Script.Serialization;
 using System.Text.RegularExpressions;
+using System.Data.Entity;
 
 namespace AdaptiveWebProject.Controllers
 {
@@ -16,6 +17,8 @@ namespace AdaptiveWebProject.Controllers
     {
 
         ApplicationDbContext db = new ApplicationDbContext();
+
+        AppDBEntities dbView = new AppDBEntities();
         
         public ActionResult Index()
         {
@@ -40,25 +43,6 @@ namespace AdaptiveWebProject.Controllers
         //[OutputCache(Duration = 600, SqlDependency = "db:PostDetails")]
         public ActionResult Dashboard()
         {
-            //var id = User.Identity.GetUserId();
-            //if (id == null)
-            //{
-            //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            //}
-            //var questions = db.Questions.Where(u => u.Id == id).Select(a => new SelectListGroup
-            //{
-            //    Name = a.Question,
-            //    Disabled = a.isRelevant
-            //});
-
-            //var userTags = db.PostTags.Join(db.PostDetails, a => a.PostId, b => b.PostId, (a, b) => new SelectListItem { Text = a.Tags, Value = b.Difficulty }).Take(10);
-
-            //if (userTags == null)
-            //{
-            //    return HttpNotFound();
-            //}
-
-            //var id = "\"" + User.Identity.GetUserId() + "\"";
             List<String> questions = new List<String>();
 
             try {
@@ -81,7 +65,6 @@ namespace AdaptiveWebProject.Controllers
                 var splitTags = usertags[0].Trim().Split(':');
 
 
-
                 List<PostWithDifficulty> postdetails = new List<PostWithDifficulty>();
                 string userExpertise = "";
                 int maxPoints = 0,pointsMod = 0;
@@ -92,13 +75,15 @@ namespace AdaptiveWebProject.Controllers
                         //minPoints = 0;
                         maxPoints = 100;
                         pointsMod = points[0];
-                        postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty.Contains("Easy")).ToList();
+                        //postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty.Contains("Easy")).ToList();
+                        postdetails = dbView.EasyPosts.Select(a => new PostWithDifficulty { PostId = a.PostId, Tags = a.Tags, Question = a.Question }).ToList();
                         break;
                     case 2:
                         userExpertise = "Mediocre";
                         maxPoints = 400;
                         pointsMod = points[0] - 100;
-                        postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty.Contains("Moderate")).ToList();
+                        //postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty.Contains("Moderate")).ToList();
+                        postdetails = dbView.ModeratePosts.Select(a => new PostWithDifficulty { PostId = a.PostId, Tags = a.Tags, Question = a.Question }).ToList();
                         break;
                     case 3:
                         userExpertise = "Expert";
@@ -107,36 +92,21 @@ namespace AdaptiveWebProject.Controllers
                             pointsMod = 10000;
                         else
                             pointsMod = points[0] - 500;
-                        postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty.Contains("Hard")).ToList();
+                        //postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty.Contains("Hard")).ToList();
+                        postdetails = dbView.HardPosts.Select(a => new PostWithDifficulty { PostId = a.PostId, Tags = a.Tags, Question = a.Question }).ToList();
                         break;
                 }
-                
-
-                //JavaScriptSerializer js = new JavaScriptSerializer();           
-
-                ViewBag.Name = username[0].Replace("\"", "");
-                ViewBag.Points = points[0];
-                ViewBag.Accepted = Int64.Parse(Regex.Replace(acceptedAnswers[0],"\\D",""));
-                ViewBag.Expertise = userExpertise;
-                ViewBag.Tags = splitTags;
-                ViewBag.Upvotes = Int64.Parse(Regex.Replace(upvotes[0], "\\D", ""));
-                ViewBag.PointsMod = pointsMod;
-                ViewBag.MaxPoints = maxPoints;
-                
-
                 foreach (var item in splitTags)
                 {
                     Boolean flag = false;
                     foreach (var i in postdetails)
                     {
-                        if (i.Tags.ToLower().Contains(item.ToLower())) {
-                            //var json = JObject.Parse(i.Question.Trim());
-                            //QuestionParts qp = (QuestionParts)js.DeserializeObject(i.Question.Trim());
+                        if (i.Tags.ToLower().Contains(item.ToLower()))
+                        {
                             var q = Regex.Match(i.Question.Trim(), "[^ ]*'Body':(.*), 'Title'").Groups[1].Value;
                             q = Regex.Replace(q, "['\"]", "");
                             q = Regex.Replace(q, "(\\\\n)+", "<br />");
                             q = Regex.Replace(q, "(\\\\r)+", "<br />");
-                            //questions.Add(json.GetValue("Body").ToString());
                             questions.Add(q);
                         }
 
@@ -150,12 +120,26 @@ namespace AdaptiveWebProject.Controllers
                     if (flag) break;
 
                 }
+
+                ViewBag.Name = username[0].Replace("\"", "");
+                ViewBag.Points = points[0];
+                ViewBag.Accepted = Int64.Parse(Regex.Replace(acceptedAnswers[0], "\\D", ""));
+                ViewBag.Expertise = userExpertise;
+                ViewBag.Tags = splitTags;
+                ViewBag.Upvotes = Int64.Parse(Regex.Replace(upvotes[0], "\\D", ""));
+                ViewBag.PointsMod = pointsMod;
+                ViewBag.MaxPoints = maxPoints;
             }
             catch(Exception ex)
             {
-                RedirectToAction("Index", "Home");
+                RedirectToAction("Dashboard", "Home");
             }
             return View(questions);
+        }
+
+        public void getQuestions(String[] splitTags, List<EasyPost> postdetails )
+        {
+
         }
 
     }

@@ -5,11 +5,10 @@ using System.Web;
 
 namespace AdaptiveWebProject.Models
 {
-    public class PostWithDifficulty
+    public class PostWithDifficulty : EasyPost
     {
-        public String Tags { get; set; }
-        public String Question { get; set; }
-        public String Difficulty { get; set; }
-
+        public int PostId { get; set; }
+        public string Tags { get; set; }
+        public string Question { get; set; }
     }
 }
