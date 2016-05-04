@@ -218,6 +218,34 @@
                     </div>
                     <!-- /.panel-body -->
                 </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-comment fa-fw"></i> Feedback
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">                            
+                        <form role="form">
+                            <label>Are the questions relevant to your areas of interest?</label>
+                                <div class="btn-group">
+                                    <button name="choice1" data-toggle="button" type="button" class="btn btn-primary btn-small">Yes</button>
+                                    <button name="choice1" data-toggle="button" type="button" class="btn btn-primary btn-small">No</button>
+                                </div>
+
+                            <label>Are you satisfied with the difficulty of the question?</label>
+                            <div class="btn-group">
+                                <button name="choice2" data-toggle="button" class="btn btn-primary btn-small">Yes</button>
+                                <button name="choice2" data-toggle="button" class="btn btn-primary btn-small">No</button>
+                            </div>
+                            <br />
+                            <br />
+                            <input type="button" class="btn btn-primary" value="Submit" id="btnSubmit" />
+                        </form>
+                            <!-- /.list-group -->
+                            @*<a href="#" class="btn btn-default btn-block">View All Alerts</a>*@
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
                 <!-- /.panel -->
             </div>
             <!-- /.col-lg-4 -->
@@ -232,7 +260,7 @@
 </p>
 
 <div id="chart" style="">
-
+    <h3 id="title" hidden>User Tags</h3>
 </div>
 
 @section scripts{
@@ -248,6 +276,12 @@
             i++;
         });
 
+        $('#btnSubmit').click(function(){
+            $('.btn-group button').removeClass('active');
+        });
+        $('#title').hide();
+       
+
         var jqxhr = $.getJSON('../Scripts/jsonda_string.json', function(d) {
             //console.log( "success" );
             var p = JSON.parse(d);
@@ -261,6 +295,7 @@
                 console.log(data)
             }
             $("#Pie").on("click",function(){
+                $('#title').show();
                 $("#chart svg").remove()
                 var w = 300;
                 var h = 300;
@@ -329,16 +364,17 @@
 
 
         var points = @Html.Raw(ViewBag.PointsMod);
+        var origPoints =@Html.Raw(ViewBag.Points);
         var tot =@Html.Raw(ViewBag.MaxPoints);
         var per = (points/tot )*100
         console.log(per)
         $("#bar").width(per + '%').text(points);
 
-        if(points<=100){
+        if(origPoints<=100){
             $('#hhh span:first-child').text('Naive - 0')
             $('#hhh span:last-child').text('Mediocre - 100')
         }
-        else if(points>100 && points<=500 ){
+        else if(origPoints>100 && origPoints<=500 ){
             $('#hhh span:first-child').text('Mediocre - 0')
             $('#hhh span:last-child').text('Expert - 400')
         }
