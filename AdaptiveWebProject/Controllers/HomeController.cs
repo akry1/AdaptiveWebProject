@@ -45,7 +45,7 @@ namespace AdaptiveWebProject.Controllers
 
         public ActionResult Dashboard()
         {
-            List<String> questions = new List<String>();
+            List<QuestionParts> questions = new List<QuestionParts>();
 
             try
             {
@@ -58,7 +58,7 @@ namespace AdaptiveWebProject.Controllers
                 var usertags = db.UserTags.Where(a => a.UserId.Contains(id)).Select(a => a.Tags).ToList<String>();
 
                 var expertise = userdata.Select(a => a.Points).ToList();
-
+               
                 var points = userdata.Select(a => a.ExpertiseLevel).ToList();
 
                 var upvotes = db.UserUpvotes.Where(a => a.UserId.Contains(id)).Select(a => a.Upvotes).ToList<String>();
@@ -67,6 +67,7 @@ namespace AdaptiveWebProject.Controllers
 
                 var splitTags = usertags[0].Trim().Split(':');
 
+                var experts = db.UsersData.Join(db.UserTags, a => a.UserId, b => b.UserId, (a, b) => new { Tags = b.Tags.ToLower(), UserId = a.UserId, Points = a.ExpertiseLevel, ExpertiseLevel = a.Points }).Where(a => a.Points == 3).ToList();
 
                 List<PostWithDifficulty> postdetails = new List<PostWithDifficulty>();
                 string userExpertise = "";
@@ -159,11 +160,34 @@ namespace AdaptiveWebProject.Controllers
 
                     foreach (var i in postdetails)
                     {
+                        QuestionParts question = new QuestionParts();
+                        ForceDirectedJson f = new ForceDirectedJson();
                         var q = Regex.Match(i.Question.Trim(), "[^ ]*'Body':(.*), 'Title'").Groups[1].Value;
                         q = Regex.Replace(q, "['\"]", "");
                         q = Regex.Replace(q, "((\\\\r)+\\\\n)+", "<br />");
                         //q = Regex.Replace(q, "(\\\\r)+", "");
-                        questions.Add(q);
+                        question.Body = q;
+
+                        question.PostId = i.PostId;                       
+
+                        // For Force directed json
+                        var postTags = i.Tags.ToLower().Split(':');
+
+                        for (int j = 1; j < 4; j++)
+                        {
+                            f.Postid = i.PostId;
+                            f.Tags[j-1] = postTags[j];
+                            if (j == 1)
+                                //f.list1 = experts.Where(a => a.Tags.Contains(postTags[j].ToLower())).Select(a => a.UserId).Take(5).ToArray<string>();
+                                f.list1 = db.Database.SqlQuery<ExpertUsers>(@"SELECT top 5 b.ExpertiseLevel, a.UserId FROM dbo.UsersDatas b, dbo.UserTags a WHERE (b.Points = 3) and b.UserId like concat('%', a.UserId, '%') and a.Tags like '%" + postTags[j] + @"%'").ToList<ExpertUsers>();
+                            else if (j == 2)
+                                f.list2 = db.Database.SqlQuery<ExpertUsers>(@"SELECT top 5 b.ExpertiseLevel, a.UserId FROM dbo.UsersDatas b, dbo.UserTags a WHERE (b.Points = 3) and b.UserId like concat('%', a.UserId, '%') and a.Tags like '%" + postTags[j] + @"%'").ToList<ExpertUsers>();
+                            else if (j == 3)
+                                f.list2 = db.Database.SqlQuery<ExpertUsers>(@"SELECT top 5 b.ExpertiseLevel, a.UserId FROM dbo.UsersDatas b, dbo.UserTags a WHERE (b.Points = 3) and b.UserId like concat('%', a.UserId, '%') and a.Tags like '%" + postTags[j] + @"%'").ToList<ExpertUsers>();
+                        }
+                        question.force = f;
+
+                        questions.Add(question);
 
                         if (questions.Count == 10)
                         {
@@ -190,6 +214,25 @@ namespace AdaptiveWebProject.Controllers
                 RedirectToAction("Dashboard", "Home");
             }
             return View(questions);
+        }
+
+        public ActionResult ForceDirected(int id)
+        {
+            ForceDirectedJson result = new ForceDirectedJson();
+            result.Postid = id;
+            var postTags = db.Posts.Where(a => a.PostId == id).Select(a => a.Tags).ToList();
+
+            var splitTags = postTags[0].Split(':');
+
+            var experts = db.UsersData.Where(a => a.Points == 3).Join(db.UserTags, a => a.UserId, b => b.UserId, (a, b) => new { Tags = b.Tags.ToLower(), UserId = a.UserId }).ToList();
+
+            for (int i = 1; i < splitTags.Length; i++)
+            {
+                result.Tags[i] = splitTags[i];
+                //result.UserIds[i] =  experts.Where(a => a.Tags.Contains(splitTags[i].ToLower())).Select(a=>a.UserId).ToList();
+            }
+
+            return Json(result);
         }
 
 

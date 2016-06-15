@@ -287,6 +287,8 @@
     <Compile Include="Models\EasyPost.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ExpertUsers.cs" />
+    <Compile Include="Models\ForceDirectedJson.cs" />
     <Compile Include="Models\HardPost.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -379,6 +381,7 @@
     <Content Include="Models\DBModel.edmx.diagram">
       <DependentUpon>DBModel.edmx</DependentUpon>
     </Content>
+    <Content Include="ClassDiagram1.cd" />
     <None Include="Properties\PublishProfiles\AdaptiveNavigationSupport - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\AdaptiveNavigationSupport - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

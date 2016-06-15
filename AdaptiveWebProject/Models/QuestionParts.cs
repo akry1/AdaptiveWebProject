@@ -8,6 +8,10 @@ namespace AdaptiveWebProject.Models
     public class QuestionParts
     {
         public String Body { get; set; }
-        public String Title { get; set; }
+
+        public int PostId { get; set; }
+
+        public ForceDirectedJson force { get; set; }
+
     }
 }

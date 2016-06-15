@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SelectListItem>
+﻿@model IEnumerable<AdaptiveWebProject.Models.UsersData>
 
 @using Microsoft.AspNet.Identity
 
@@ -42,15 +42,15 @@
         @Html.HiddenFor(@User.Identity.GetUserId())*@
 
             <td class="col-lg-8 form-group">
-                @Html.DisplayFor(model => row.Text)
+                @Html.DisplayFor(model => row.UserId)
             </td>       
 
             <td class="col-lg-2 form-group">
                 @*@Html.DisplayFor(model => row.Value)*@
                 <div class="col-md-10">
                     <div class="checkbox">
-                        @Html.EditorFor(model => row.Value)
-                        @Html.ValidationMessageFor(model => row.Value, "", new { @class = "text-danger" })
+                        @Html.EditorFor(model => row.UserId)
+                        @Html.ValidationMessageFor(model => row.UserId, "", new { @class = "text-danger" })
                     </div>
                 </div>
             </td>
@@ -74,10 +74,4 @@
     @Html.ActionLink("Back to List", "Index")
 </p>
 
-@section scripts{
-    <script>
-        var model = '@Html.Raw(Json.Encode(Model))';
-        $('#userId').text(model);
-    </script>
 
-}

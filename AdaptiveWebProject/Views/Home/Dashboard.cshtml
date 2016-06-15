@@ -1,4 +1,4 @@
-﻿@model IEnumerable<String>
+﻿@model IEnumerable<AdaptiveWebProject.Models.QuestionParts>
 @using Microsoft.AspNet.Identity
 <div id="wrapper">
     <!-- Navigation -->
@@ -109,6 +109,9 @@
                         <!-- /.panel-heading -->
                         <div class="panel-body">
                             Solution 1
+                        </div>
+                        <div class="help">
+                            <input id="helpBtn" class="btn btn-primary" value="Help" />
                         </div>
                         <!-- /.panel-body -->
                     </div>
@@ -263,6 +266,10 @@
     <h3 id="title" hidden>User Tags</h3>
 </div>
 
+<div id="success" style="">
+    <label style="background-color:white;color:green;font-size:large;vertical-align:central">Success</label>
+</div>
+
 @section scripts{
     <script type="text/javascript" src="~/Scripts/d3.js"></script>
     <script type="text/javascript" src="~/Scripts/bpopup.js"></script>
@@ -271,15 +278,23 @@
         var i =0;
         model.forEach(function (question) {
             //console.log(question);
-            $('#container_questions').html(question);
-            $('#vin_container .panel-body:eq('+i+')').html(question);
+            $('#container_questions').html(question['Body']);
+            $('#vin_container .panel-body:eq('+i+')').html(question['Body']);
             i++;
         });
 
         $('#btnSubmit').click(function(){
             $('.btn-group button').removeClass('active');
+            $('#success').bPopup({
+                speed: 650,
+                transition:"slideIn",
+                transitionClose:"slideBack"
+            });
         });
+
         $('#title').hide();
+
+
        
 
         var jqxhr = $.getJSON('../Scripts/jsonda_string.json', function(d) {
@@ -393,7 +408,7 @@
 
         $('#sample').click(function () {
             $.ajax({
-                url: '@Url.Action("Dashboard","Questions")',
+                url: '@Url.Action("Dashboard","ForceDirected")',
                 contentType: "application/json; charset=utf-8",
                 dataType: "text",
                 success: onSuccess
@@ -405,7 +420,149 @@
         }
 
 
+        $('#helpBtn').click(function(){
+            var width = 960,
+            height = 500;
 
+            var force = d3.layout.force()
+                .linkDistance(80)
+                .charge(-120)
+                .gravity(.05)
+                .size([width, height])
+                .on("tick", tick);
+
+            var svg = d3.select("body").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            var link = svg.selectAll(".link"),
+                node = svg.selectAll(".node");
+
+            //d3.json("graph.json", function(error, json) {
+            //    if (error) throw error;
+
+            //    root = json;
+            //    update();
+            //});
+
+            root =   {
+                "name": model[0].question.force.PostId,
+                "children": [
+                 {
+                     "name": question.force.Tags[0],
+                     "children": [
+                      {"name": model[0].question.force.list1[0].UserId, "size": model[0].question.force.list1[0].Points},
+                      {"name": model[0].question.force.list1[1].UserId, "size": model[0].question.force.list1[1].Points},
+                      {"name": model[0].question.force.list1[2].UserId, "size": model[0].question.force.list1[2].Points},
+                      {"name": model[0].question.force.list1[3].UserId, "size": model[0].question.force.list1[3].Points},
+                      {"name": model[0].question.force.list1[4].UserId, "size": model[0].question.force.list1[4].Points}
+                     ]
+                 },
+                 {
+                     "name": model[0].question.force.Tags[1],
+                     "children": [
+                      {"name": model[0].question.force.list2[0].UserId, "size": model[0].question.force.list2[0].Points},
+                      {"name": model[0].question.force.list2[1].UserId, "size": model[0].question.force.list2[1].Points},
+                      {"name": model[0].question.force.list2[2].UserId, "size": model[0].question.force.list2[2].Points},
+                      {"name": model[0].question.force.list2[3].UserId, "size": model[0].question.force.list2[3].Points},
+                      {"name": model[0].question.force.list2[4].UserId, "size": model[0].question.force.list2[4].Points}
+                     ]
+                 },
+                 {
+                     "name": model[0].question.force.Tags[2],
+                     "children": [
+                      {"name": model[0].question.force.list3[0].UserId, "size": model[0].question.force.list3[0].Points},
+                      {"name": model[0].question.force.list3[1].UserId, "size": model[0].question.force.list3[1].Points},
+                      {"name": model[0].question.force.list3[2].UserId, "size": model[0].question.force.list3[2].Points},
+                      {"name": model[0].question.force.list3[3].UserId, "size": model[0].question.force.list3[3].Points},
+                      {"name": model[0].question.force.list3[4].UserId, "size": model[0].question.force.list3[4].Points}
+                     ]
+                 }
+                ]
+            }
+
+            function update() {
+                var nodes = flatten(root),
+                    links = d3.layout.tree().links(nodes);
+
+                // Restart the force layout.
+                force
+                    .nodes(nodes)
+                    .links(links)
+                    .start();
+
+                // Update links.
+                link = link.data(links, function(d) { return d.target.id; });
+
+                link.exit().remove();
+
+                link.enter().insert("line", ".node")
+                    .attr("class", "link");
+
+                // Update nodes.
+                node = node.data(nodes, function(d) { return d.id; });
+
+                node.exit().remove();
+
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .on("click", click)
+                    .call(force.drag);
+
+                nodeEnter.append("circle")
+                    .attr("r", function(d) { return Math.sqrt(d.size) / 10 || 4.5; });
+
+                nodeEnter.append("text")
+                    .attr("dy", ".35em")
+                    .text(function(d) { return d.name; });
+
+                node.select("circle")
+                    .style("fill", color);
+            }
+
+            function tick() {
+                link.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            }
+
+            function color(d) {
+                return d._children ? "#3182bd" // collapsed package
+                    : d.children ? "#c6dbef" // expanded package
+                    : "#fd8d3c"; // leaf node
+            }
+
+            // Toggle children on click.
+            function click(d) {
+                if (d3.event.defaultPrevented) return; // ignore drag
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update();
+            }
+
+            // Returns a list of all nodes under the root.
+            function flatten(root) {
+                var nodes = [], i = 0;
+
+                function recurse(node) {
+                    if (node.children) node.children.forEach(recurse);
+                    if (!node.id) node.id = ++i;
+                    nodes.push(node);
+                }
+
+                recurse(root);
+                return nodes;
+            }
+        });
+        
 
 
     </script>

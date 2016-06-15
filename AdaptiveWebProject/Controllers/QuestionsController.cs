@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using AdaptiveWebProject.Models;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json.Linq;
 
 namespace AdaptiveWebProject.Controllers
 {
@@ -26,7 +27,8 @@ namespace AdaptiveWebProject.Controllers
         [Authorize]
         public ActionResult Dashboard()
         {
-            //var id = User.Identity.GetUserId();
+            var id = "\"" + User.Identity.GetUserId() + "\"";
+            var useridwithoutQ = User.Identity.GetUserId();
             //if (id == null)
             //{
             //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -35,15 +37,53 @@ namespace AdaptiveWebProject.Controllers
             //{
             //    Name = a.Question,
             //    Disabled = a.isRelevant
-            //});
+            //})            
 
-            var userTags = db.PostTags.Join(db.PostDetails, a => a.PostId, b => b.PostId, (a, b) => new SelectListItem{ Text = a.Tags, Value = b.Difficulty });
+            // var userTags = db.UsersData.Where(a => a.UserId == id).Select(a => a).ToList<UsersData>();
 
-            if (userTags == null)
-            {
-                return HttpNotFound();
+            var userdata = db.UsersData.Where(a => a.UserId == id);
+
+            var usertags = db.UserTags.Where(a => a.UserId == useridwithoutQ).Select(a => a.Tags).ToString();
+
+            var expertise = userdata.Select(a => a.ExpertiseLevel).ToString();
+
+            var splitTags = usertags.Split(':');
+
+            List<PostWithDifficulty> postdetails = new List<PostWithDifficulty>();
+            switch (expertise) {                
+                case "1":
+                    postdetails = db.PostDetails.Join(db.Posts, a=> a.PostId, b=> b.PostId, (a,b) => new PostWithDifficulty{ Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty == "Easy").ToList();
+                    break;
+                case "2":
+                    postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty == "Moderate").ToList();
+                    break;
+                case "3":
+                    postdetails = db.PostDetails.Join(db.Posts, a => a.PostId, b => b.PostId, (a, b) => new PostWithDifficulty { Difficulty = a.Difficulty, Tags = b.Tags, Question = b.Question }).Where(a => a.Difficulty == "Hard").ToList();
+                    break;
             }
-            return View(userTags);
+            List<String> questions = new List<String>();
+            
+            foreach (var item in splitTags)
+            {
+                foreach (var i in postdetails)
+                {
+                    if (i.Tags.ToLower().Contains(item.ToLower())){
+                        var json = JObject.Parse(i.Question);
+                        questions.Add(json.GetValue("Body").ToString());
+                    }
+                }
+
+                if (questions.Count == 10)
+                    break;             
+                    
+            }
+             
+            //if (userTags.Count == 0)
+            //{
+                
+            //    return HttpNotFound();
+            //}
+            return PartialView("View",questions);
         }
     }
 }
